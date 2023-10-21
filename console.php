@@ -13,15 +13,17 @@ if ($data === null || !isset($data['data'])) {
     exit();
 }
 
-echo "Currency: " . $data['data']['base'] . "\n";
-echo "Price: " . $data['data']['amount'] . " " . $data['data']['currency'] . "\n";
+echo sprintf("Currency: %s\n", $data['data']['base']);
+echo sprintf("Price: %s %s\n", $data['data']['amount'], $data['data']['currency']);
 echo "\n";
 
 // Faza 3: Naloga 3
-$help_text = "HELP TEXT:
+$help_text = <<<TEXT
+HELP TEXT:
 php console.php <currency_symbol>;
-currency symbols: EUR,EUR, GBP, JPY, CNY, BTC etc;
-EXAMPLE: php console.php ETH\n";
+currency symbols: EUR, GBP, JPY, CNY, BTC, etc.
+EXAMPLE: php console.php ETH
+TEXT;
 
 if (!empty($_SERVER['argv'][1]) && strtolower($_SERVER['argv'][1]) === 'help') {
     echo $help_text;
@@ -39,8 +41,7 @@ if (!empty($_SERVER['argv'][1])) {
         echo "Error loading data for $currency_symbol!\n";
         exit();
     }
-
-    echo "Price of $currency_symbol in USD: " . $data['data']['amount'] . " USD\n";
+  echo sprintf("Price of %s in USD: %s USD\n", $currency_symbol, $data['data']['amount']);
 } else {
     echo $help_text;
 }
