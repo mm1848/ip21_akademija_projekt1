@@ -2,8 +2,7 @@
 error_reporting(0);
 
 // Faza 1: Naloga 1 
-echo "Hello world\n";
-echo "\n";
+echo "Hello world\n\n";
 
 // Naloga 2: Izpis podatka o BTC
 $api_url1 = 'https://api.coinbase.com/v2/prices/BTC-USD/spot';
@@ -47,6 +46,7 @@ if (!empty($_SERVER['argv'][1])) {
 
     if ($data === null || !isset($data['data'])) {
         echo "Error loading data for $currency_symbol!\n";
+        echo $help_text;
         exit();
     }
   echo sprintf("Price of %s in USD: %s USD\n", $currency_symbol, $data['data']['amount']);
@@ -67,7 +67,7 @@ if (count($_SERVER['argv']) == 3) {
     echo $help_text;
     exit(1); 
 } else {
-    echo "Invalid arguments. Provide valid currency symbols or use 'help' for usage.\n";
+    echo "Invalid arguments. Provide valid currency symbols or try 'php console.php help'.\n";
     exit(1); 
 }
 
@@ -114,16 +114,15 @@ if (count($_SERVER['argv']) == 3) {
     exit();
 }
 
-
 if ($json_data === false) {
-    echo "Error loading data for $base_currency-$quote_currency. Please check if the currency pair exists and try again.\n";
+    echo "Error loading data for $base_currency-$quote_currency. Check if the currency pair exists and try again.\n";
     exit(1); 
 }
 
 $data = json_decode($json_data, true);
 
 if ($data === null || !isset($data['data'])) {
-    echo "Error loading data for $base_currency-$quote_currency. Please check if the currency pair exists and try again.\n";
+    echo "Error loading data for $base_currency-$quote_currency. Check if the currency pair exists and try again.\n";
     echo $help_text;
     exit(1); 
 }
@@ -133,17 +132,43 @@ echo sprintf("Currency: %s\n", $data['data']['base']);
 echo sprintf("Price: %s %s\n", $data['data']['amount'], $data['data']['currency']);
 
 
+//Naloga 5: White-listing argumentov
+$valid_currencies_url = 'https://api.coinbase.com/v2/currencies';
+$valid_currencies_data = @file_get_contents($valid_currencies_url);
 
+if ($valid_currencies_data === false) {
+    echo "Error loading the list of valid currencies. Try again later.\n";
+    exit(1);
+}
 
+$valid_currencies = json_decode($valid_currencies_data, true);
 
+if ($valid_currencies === null || !isset($valid_currencies['data']) || !is_array($valid_currencies['data'])) {
+    echo "Error processing the list of valid currencies. Try again later.\n";
+    exit(1);
+}
 
+$valid_currency_symbols = array_column($valid_currencies['data'], 'id');
 
+if (count($_SERVER['argv']) == 3) {
+    $base_currency = strtoupper($_SERVER['argv'][1]);
+    $quote_currency = strtoupper($_SERVER['argv'][2]);
 
+    $is_base_valid = in_array($base_currency, $valid_currency_symbols);
+    $is_quote_valid = in_array($quote_currency, $valid_currency_symbols);
+    
+    if (!$is_base_valid && !$is_quote_valid) {
+        echo "Invalid currency symbols. Both base and quote currencies should be valid.\n";
+        exit(1);
+    }
 
+    $api_url5 = "https://api.coinbase.com/v2/prices/$base_currency-$quote_currency/spot";
+} elseif (count($_SERVER['argv']) == 2) {
+    $currency_symbol = strtoupper($_SERVER['argv'][1]);
 
-
-
-
-
-
+    if (!in_array($currency_symbol, $valid_currency_symbols)) {
+        echo "Invalid currency symbol. Provide a valid currency.\n";
+        exit(1);
+    }
+}
 
