@@ -5,16 +5,14 @@ echo "DOSTOP DO PODATKOV O CENAH CRYPTO INŠTRUMENTOV\n\n";
 $help_text = <<<TEXT
 HELP TEXT:
 1. To check the price of a single currency:
-  php console.php <currency_symbol>
-  Currency symbols: EUR, GBP, JPY, CNY, BTC, ETH, etc.
-  FOR EXAMPLE: php console.php ETH.
+   php console.php <currency_symbol>
+   FOR EXAMPLE: php console.php EUR
 
 2. To check the price of any currency pair, provide the symbols of the base and quote currencies:
-  php console.php <base_currency> <quote_currency>
-  Currency symbols: EUR, GBP, JPY, CNY, BTC, ETH, etc.
-  FOR EXAMPLE: php console.php GBP JPY.
+   php console.php <base_currency> <quote_currency>
+   FOR EXAMPLE: php console.php GBP JPY
 
-3. Commands: 'help', 'list'.\n\n
+3. To see all valid currency symbols: php console.php list\n\n 
 TEXT;
 
 if (!empty($_SERVER['argv'][1]) && strtolower($_SERVER['argv'][1]) === 'help') {
@@ -63,7 +61,7 @@ function callApi($path, $params = '') {
         echo "Error loading data!\n";
         exit(1);
     }
-
+    
     return $data;
 }
 
@@ -80,33 +78,38 @@ function printCurrencyPairPrice($base_currency, $quote_currency) {
     echo "\n";
 }
 
-//VSE VALID VALUTE
-$valid_currencies_data_url = 'https://api.coinbase.com/v2/currencies';
-$valid_currencies_data = file_get_contents($valid_currencies_data_url);
+function getValidCurrencies() {
+    $valid_currencies_data_url = 'https://api.coinbase.com/v2/currencies';
+    $valid_currencies_data = callApi('currencies');
 
-if ($valid_currencies_data === false) {
-    echo "Error loading the list of valid currencies. Try again later.\n";
-    exit(1);
+    if ($valid_currencies_data === false) {
+        echo "Error loading the list of valid currencies. Try again later.\n";
+        exit(1);
+    }
+
+    $valid_currencies = $valid_currencies_data;
+    if (!isset($valid_currencies['data']) || !is_array($valid_currencies['data'])) {
+        echo "Error processing the list of valid currencies. Try again later.\n";
+        exit(1);
+    }
+
+    return array_column($valid_currencies['data'], 'id');
 }
 
-$valid_currencies = json_decode($valid_currencies_data, true);
-if ($valid_currencies === null || !isset($valid_currencies['data']) || !is_array($valid_currencies['data'])) {
-    echo "Error processing the list of valid currencies. Try again later.\n";
-    exit(1);
+function printListOfCurrencies() {
+    $valid_currency_symbols = getValidCurrencies();
+    $list_of_currencies = "LIST OF VALID CURRENCIES: " . implode(", ", $valid_currency_symbols) . ".\n";
+    echo $list_of_currencies;
 }
-
-$valid_currency_symbols = array_column($valid_currencies['data'], 'id');
-
-$list_of_currencies = "LIST OF VALID CURRENCIES: " . implode(", ", $valid_currency_symbols) . ".\n";
 
 if (!empty($_SERVER['argv'][1]) && strtolower($_SERVER['argv'][1]) === 'list') {
-    echo $list_of_currencies;
+    printListOfCurrencies();
     exit();
 }
 
 // IZPIS POLJUBNE VALUTE
 $currency_symbol = strtoupper($_SERVER['argv'][1]);
-if (!in_array($currency_symbol, $valid_currency_symbols)) {
+if (!in_array($currency_symbol, getValidCurrencies())) {
     echo "Error: Invalid currency symbol '$currency_symbol'. Provide a valid currency symbol or try 'help'.\n";
     exit(1);
 }
@@ -117,7 +120,7 @@ if (count($_SERVER['argv']) == 3) {
     $base_currency = strtoupper($_SERVER['argv'][1]);
     $quote_currency = strtoupper($_SERVER['argv'][2]);
 
-    if (!in_array($base_currency, $valid_currency_symbols) || !in_array($quote_currency, $valid_currency_symbols)) {
+    if (!in_array($base_currency, getValidCurrencies()) || !in_array($quote_currency, getValidCurrencies())) {
         echo "Error: Invalid currency symbols. Provide valid currency symbols or try 'help'.\n";
         exit(1);
     }
@@ -127,16 +130,5 @@ if (count($_SERVER['argv']) == 3) {
     echo "Invalid arguments. Provide valid currency symbols or try 'help'.\n";
     exit(1);
 }
-
-
-
-
-
-
-
-
-
-
-
 
 
