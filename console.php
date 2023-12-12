@@ -51,6 +51,7 @@ if (count($_SERVER['argv']) == 2) {
 }
 
 const API_BASE_URL = 'https://api.coinbase.com/v2/';
+$validCurrencies = getValidCurrencies(); 
 
 function callApi($path, $params = '') {
     $url = API_BASE_URL . $path . $params;
@@ -79,7 +80,6 @@ function printCurrencyPairPrice($base_currency, $quote_currency) {
 }
 
 function getValidCurrencies() {
-    $valid_currencies_data_url = 'https://api.coinbase.com/v2/currencies';
     $valid_currencies_data = callApi('currencies');
 
     if ($valid_currencies_data === false) {
