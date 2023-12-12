@@ -1,5 +1,7 @@
 <?php 
 
+require_once 'lib/view/consoleView.php';
+
 echo "DOSTOP DO PODATKOV O CENAH CRYPTO INŠTRUMENTOV\n\n";
 
 $help_text = <<<TEXT
@@ -50,60 +52,10 @@ if (count($_SERVER['argv']) == 2) {
     exit();
 }
 
-const API_BASE_URL = 'https://api.coinbase.com/v2/';
-$validCurrencies = getValidCurrencies(); 
-
-function callApi($path, $params = '') {
-    $url = API_BASE_URL . $path . $params;
-    $json_data = file_get_contents($url);
-    $data = json_decode($json_data, true);
-
-    if ($data === null || !isset($data['data'])) {
-        echo "Error loading data!\n";
-        exit(1);
-    }
-    
-    return $data;
-}
-
-function printCurrencyPrice($currency_symbol) {
-    $data = callApi("prices/$currency_symbol-USD/spot");
-    echo sprintf("Price of %s in USD: %s USD\n", $currency_symbol, $data['data']['amount']);
-}
-
-function printCurrencyPairPrice($base_currency, $quote_currency) {
-    $data = callApi("prices/$base_currency-$quote_currency/spot");
-    echo "$base_currency-$quote_currency Price:\n";
-    echo sprintf("Currency: %s\n", $data['data']['base']);
-    echo sprintf("Price: %s %s\n", $data['data']['amount'], $data['data']['currency']);
-    echo "\n";
-}
-
-function getValidCurrencies() {
-    $valid_currencies_data = callApi('currencies');
-
-    if ($valid_currencies_data === false) {
-        echo "Error loading the list of valid currencies. Try again later.\n";
-        exit(1);
-    }
-
-    $valid_currencies = $valid_currencies_data;
-    if (!isset($valid_currencies['data']) || !is_array($valid_currencies['data'])) {
-        echo "Error processing the list of valid currencies. Try again later.\n";
-        exit(1);
-    }
-
-    return array_column($valid_currencies['data'], 'id');
-}
-
-function printListOfCurrencies() {
-    $valid_currency_symbols = getValidCurrencies();
-    $list_of_currencies = "LIST OF VALID CURRENCIES: " . implode(", ", $valid_currency_symbols) . ".\n";
-    echo $list_of_currencies;
-}
+require_once 'lib/model.php';
 
 if (!empty($_SERVER['argv'][1]) && strtolower($_SERVER['argv'][1]) === 'list') {
-    printListOfCurrencies();
+    echo printList();
     exit();
 }
 
@@ -113,7 +65,7 @@ if (!in_array($currency_symbol, getValidCurrencies())) {
     echo "Error: Invalid currency symbol '$currency_symbol'. Provide a valid currency symbol or try 'help'.\n";
     exit(1);
 }
-printCurrencyPrice($currency_symbol);
+echo printCurrencyPrice($currency_symbol);
 
 // IZPIS PARA
 if (count($_SERVER['argv']) == 3) {
@@ -125,7 +77,7 @@ if (count($_SERVER['argv']) == 3) {
         exit(1);
     }
 
-    printCurrencyPairPrice($base_currency, $quote_currency);
+    echo printCurrencyPairPrice($base_currency, $quote_currency);
 } elseif (count($_SERVER['argv']) != 2) {
     echo "Invalid arguments. Provide valid currency symbols or try 'help'.\n";
     exit(1);
