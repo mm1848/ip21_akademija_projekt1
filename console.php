@@ -1,86 +1,79 @@
 <?php 
 
 require_once 'lib/view/consoleView.php';
-
-echo "DOSTOP DO PODATKOV O CENAH CRYPTO INŠTRUMENTOV\n\n";
-
-$help_text = <<<TEXT
-HELP TEXT:
-1. To check the price of a single currency:
-   php console.php <currency_symbol>
-   FOR EXAMPLE: php console.php EUR
-
-2. To check the price of any currency pair, provide the symbols of the base and quote currencies:
-   php console.php <base_currency> <quote_currency>
-   FOR EXAMPLE: php console.php GBP JPY
-
-3. To see all valid currency symbols: php console.php list\n\n 
-TEXT;
-
-if (!empty($_SERVER['argv'][1]) && strtolower($_SERVER['argv'][1]) === 'help') {
-    echo $help_text;
-    exit();
-}
-
-if (empty($_SERVER['argv'][1])) {
-    echo "Provide valid currency symbols or try 'help'.\n";
-    exit(1);
-}
-
-// ŠTEVILO ARGUMENTOV
-if (count($_SERVER['argv']) == 2) {
-    $currency_symbol = strtoupper($_SERVER['argv'][1]);
-
-    // dolžina valute za par
-    if (strlen($currency_symbol) < 3 || strlen($currency_symbol) > 10) {
-        echo "Currency symbols should be between 3 and 10 characters.\n";
-        echo $help_text;
-        exit(1);
-    }
-} elseif (count($_SERVER['argv']) == 3) {
-    $base_currency = strtoupper($_SERVER['argv'][1]);
-    $quote_currency = strtoupper($_SERVER['argv'][2]);
-
-    // dolžina ene valute
-    if (strlen($base_currency) < 3 || strlen($base_currency) > 10 || strlen($quote_currency) < 3 || strlen($quote_currency) > 10) {
-        echo "Currency symbols should be between 3 and 10 characters.\n";
-        echo $help_text;
-        exit(1);
-    }
-} else {
-    echo $help_text;
-    exit();
-}
-
 require_once 'lib/model.php';
 
-if (!empty($_SERVER['argv'][1]) && strtolower($_SERVER['argv'][1]) === 'list') {
-    echo printList();
+echo "CRYPTO PRICE VIEWER" . PHP_EOL . PHP_EOL;
+
+if (empty($_SERVER['argv'][1])) {
+    echo "Provide valid currency symbols or try 'help'." . PHP_EOL;
+    exit(1);
+}
+
+if (!empty($_SERVER['argv'][1]) && strtolower($_SERVER['argv'][1]) === 'help') {
+    echo printHelpText();
     exit();
 }
 
-// IZPIS POLJUBNE VALUTE
-$currency_symbol = strtoupper($_SERVER['argv'][1]);
-if (!in_array($currency_symbol, getValidCurrencies())) {
-    echo "Error: Invalid currency symbol '$currency_symbol'. Provide a valid currency symbol or try 'help'.\n";
-    exit(1);
+$command = strtolower($_SERVER['argv'][1]);
+
+switch ($command) {
+    case 'help':
+        echo printHelpText();
+        break;
+    case 'list':
+        $valid_currency_symbols = getValidCurrencies();
+        echo printList($valid_currency_symbols);
+        break;
+    case 'pair':
+        handleCurrencyPairCommand();
+        break;
+    case 'single':
+        handleSingleCurrencyCommand();
+        break;
+    default:
+        echo "Invalid command. Provide valid command or try 'help'." . PHP_EOL;
+        exit(1);
 }
-echo printCurrencyPrice($currency_symbol);
 
-// IZPIS PARA
-if (count($_SERVER['argv']) == 3) {
-    $base_currency = strtoupper($_SERVER['argv'][1]);
-    $quote_currency = strtoupper($_SERVER['argv'][2]);
-
-    if (!in_array($base_currency, getValidCurrencies()) || !in_array($quote_currency, getValidCurrencies())) {
-        echo "Error: Invalid currency symbols. Provide valid currency symbols or try 'help'.\n";
+function handleSingleCurrencyCommand() {
+    if (count($_SERVER['argv']) !== 3) {
+        echo "Invalid number of arguments for 'single' command. Provide a valid currency symbol." . PHP_EOL;
         exit(1);
     }
 
-    echo printCurrencyPairPrice($base_currency, $quote_currency);
-} elseif (count($_SERVER['argv']) != 2) {
-    echo "Invalid arguments. Provide valid currency symbols or try 'help'.\n";
-    exit(1);
+    $currency_symbol = strtoupper($_SERVER['argv'][2]);
+
+    if (!isValidCurrencySymbol($currency_symbol)) {
+        echo "Error: Invalid currency symbol '$currency_symbol'. Provide a valid currency symbol or try 'help'." . PHP_EOL;
+        exit(1);
+    }
+
+    $price = getCurrencyPrice($currency_symbol);
+    echo printCurrencyPrice($currency_symbol, $price);
 }
 
+function handleCurrencyPairCommand() {
+    if (count($_SERVER['argv']) !== 4) {
+        echo "Invalid number of arguments for 'pair' command. Provide valid base and quote currency symbols." . PHP_EOL;
+        exit(1);
+    }
 
+    $base_currency = strtoupper($_SERVER['argv'][2]);
+    $quote_currency = strtoupper($_SERVER['argv'][3]);
+
+    if (!isValidCurrencySymbol($base_currency) || !isValidCurrencySymbol($quote_currency)) {
+        echo "Error: Invalid currency symbols. Provide valid currency symbols or try 'help'." . PHP_EOL;
+        exit(1);
+    }
+
+    $pair_data = getCurrencyPairPrice($base_currency, $quote_currency);
+
+    if ($pair_data === false) {
+        echo "Error: Unable to retrieve currency pair data." . PHP_EOL;
+        exit(1);
+    }
+
+    echo printCurrencyPairPrice($base_currency, $quote_currency, $pair_data['base'], $pair_data['amount'], $pair_data['currency']);
+
+}

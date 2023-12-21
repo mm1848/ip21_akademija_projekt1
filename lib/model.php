@@ -25,6 +25,11 @@ function getValidCurrencies() {
     return array_column($valid_currencies_data['data'], 'id');
 }
 
+function isValidCurrencySymbol($currency_symbol) { ///////////////////DODANO NA NOVO
+    $valid_currencies = getValidCurrencies();
+    return in_array($currency_symbol, $valid_currencies);
+}
+
 function getCurrencyPrice($currency_symbol) {
     $data = callApi("prices/$currency_symbol-USD/spot");
 
