@@ -25,9 +25,14 @@ function getValidCurrencies() {
     return array_column($valid_currencies_data['data'], 'id');
 }
 
-function isValidCurrencySymbol($currency_symbol) { ///////////////////DODANO NA NOVO
+function isValidCurrencySymbol($currency_symbol) { 
     $valid_currencies = getValidCurrencies();
     return in_array($currency_symbol, $valid_currencies);
+}
+
+function isValidCurrencySymbolLength($currency_symbol) {
+    $symbol_length = strlen($currency_symbol);
+    return $symbol_length >= 3 && $symbol_length <= 10;
 }
 
 function getCurrencyPrice($currency_symbol) {
