@@ -5,16 +5,17 @@ require_once 'lib/model.php';
 
 echo "CRYPTO PRICE VIEWER" . PHP_EOL . PHP_EOL;
 
-if (empty($_SERVER['argv'][1])) {
-    echo "Provide valid currency symbols or try 'help'." . PHP_EOL;
+if ($argc < 2 || empty($argv[1])) {
+    echo "Provide valid command or try 'help'." . PHP_EOL;
     exit(1);
 }
 
-$command = strtolower($_SERVER['argv'][1]);
+$command = strtolower($argv[1]);
+$parameters = array_slice($argv, 2);
 
 switch ($command) {
     case 'help':
-        if (count($_SERVER['argv']) > 2) {
+        if (!empty($parameters)) {
             echo "Invalid command. Provide valid command or try 'help'." . PHP_EOL;
             exit(1);
         }
@@ -22,7 +23,7 @@ switch ($command) {
         break;
 
     case 'list':
-        if (count($_SERVER['argv']) > 2) {
+        if (!empty($parameters)) {
             echo "Invalid command. Provide valid command or try 'help'." . PHP_EOL;
             exit(1);
         }
@@ -30,12 +31,14 @@ switch ($command) {
         echo printList($valid_currency_symbols);
         break;
 
-    case 'pair':
-        handleCurrencyPairCommand();
-        break;
-
     case 'single':
-        handleSingleCurrencyCommand();
+        $result = handleSingleCurrencyCommand($parameters);
+        echo $result;
+        break;
+    
+    case 'pair':
+        $result = handleCurrencyPairCommand($parameters);
+        echo $result;
         break;
 
     default:
@@ -43,53 +46,47 @@ switch ($command) {
         exit(1);
 }
 
-function handleSingleCurrencyCommand() {
-    if (count($_SERVER['argv']) !== 3) {
-        echo "Invalid number of arguments for 'single' command. Provide a valid currency symbol." . PHP_EOL;
-        exit(1);
+function handleSingleCurrencyCommand($params) {
+    if (count($params) !== 1) {
+        return "Invalid number of arguments for 'single' command. Provide a valid currency symbol." . PHP_EOL;
     }
 
-    $currency_symbol = strtoupper($_SERVER['argv'][2]);
+    $currency_symbol = strtoupper($params[0]);
 
     if (!isValidCurrencySymbolLength($currency_symbol)) {
-        echo "Currency symbols should be between 3 and 10 characters." . PHP_EOL;
-        exit(1);
+        return "Currency symbols should be between 3 and 10 characters." . PHP_EOL;
     }
 
     if (!isValidCurrencySymbol($currency_symbol)) {
-        echo "Invalid currency symbol '$currency_symbol'. Provide a valid currency symbol or try 'help'." . PHP_EOL;
-        exit(1);
+        return "Invalid currency symbol '$currency_symbol'. Provide a valid currency symbol or try 'help'." . PHP_EOL;
     }
 
     $price = getCurrencyPrice($currency_symbol);
-    echo printCurrencyPrice($currency_symbol, $price);
+    return printCurrencyPrice($currency_symbol, $price);
 }
 
-function handleCurrencyPairCommand() {
-    if (count($_SERVER['argv']) !== 4) {
-        echo "Invalid number of arguments for 'pair' command. Provide valid base and quote currency symbols." . PHP_EOL;
-        exit(1);
+function handleCurrencyPairCommand($params) {
+    if (count($params) !== 2) {
+        return "Invalid number of arguments for 'pair' command. Provide valid base and quote currency symbols." . PHP_EOL;
+       
     }
 
-    $base_currency = strtoupper($_SERVER['argv'][2]);
-    $quote_currency = strtoupper($_SERVER['argv'][3]);
+    $base_currency = strtoupper($params[0]);
+    $quote_currency = strtoupper($params[1]);
 
     if (!isValidCurrencySymbolLength($base_currency) || !isValidCurrencySymbolLength($quote_currency)) {
-        echo "Currency symbols should be between 3 and 10 characters." . PHP_EOL;
-        exit(1);
+        return "Currency symbols should be between 3 and 10 characters." . PHP_EOL;
     }
 
     if (!isValidCurrencySymbol($base_currency) || !isValidCurrencySymbol($quote_currency)) {
-        echo "Invalid currency symbols. Provide valid currency symbols or try 'help'." . PHP_EOL;
-        exit(1);
+        return "Invalid currency symbols. Provide valid currency symbols or try 'help'." . PHP_EOL;
     }
 
     $pair_data = getCurrencyPairPrice($base_currency, $quote_currency);
 
     if ($pair_data === false) {
-        echo "Unable to retrieve currency pair data." . PHP_EOL;
-        exit(1);
+        return "Unable to retrieve currency pair data." . PHP_EOL;
     }
 
-    echo printCurrencyPairPrice($base_currency, $quote_currency, $pair_data['base'], $pair_data['amount'], $pair_data['currency']);
+    return printCurrencyPairPrice($base_currency, $quote_currency, $pair_data);
 }
