@@ -10,6 +10,8 @@ if ($argc < 2 || empty($argv[1])) {
     exit(1);
 }
 
+$model = new Model();
+$view = new ConsoleView($model);
 $command = strtolower($argv[1]);
 $parameters = array_slice($argv, 2);
 
@@ -19,7 +21,7 @@ switch ($command) {
             echo "Invalid command. Provide valid command or try 'help'." . PHP_EOL;
             exit(1);
         }
-        echo printHelpText();
+        $view-> printHelpText();
         break;
 
     case 'list':
@@ -27,45 +29,45 @@ switch ($command) {
             echo "Invalid command. Provide valid command or try 'help'." . PHP_EOL;
             exit(1);
         }
-        $valid_currency_symbols = getValidCurrencies();
-        echo printList($valid_currency_symbols);
+        $valid_currency_symbols = $model->getValidCurrencies();
+        $view-> printList($valid_currency_symbols);
         break;
 
     case 'single':
-        $result = handleSingleCurrencyCommand($parameters);
-        echo $result;
-        break;
-    
+            $result = handleSingleCurrencyCommand($model, $view, $parameters);
+            echo $result;
+            break;
+        
     case 'pair':
-        $result = handleCurrencyPairCommand($parameters);
-        echo $result;
-        break;
+            $result = handleCurrencyPairCommand($model, $view, $parameters);
+            echo $result;
+            break;
 
     default:
         echo "Invalid command. Provide valid command or try 'help'." . PHP_EOL;
         exit(1);
 }
 
-function handleSingleCurrencyCommand($params) {
+function handleSingleCurrencyCommand(Model $model, ConsoleView $view, $params) {
     if (count($params) !== 1) {
         return "Invalid number of arguments for 'single' command. Provide a valid currency symbol." . PHP_EOL;
     }
 
     $currency_symbol = strtoupper($params[0]);
 
-    if (!isValidCurrencySymbolLength($currency_symbol)) {
+    if (!$model->isValidCurrencySymbolLength($currency_symbol)) {
         return "Currency symbols should be between 3 and 10 characters." . PHP_EOL;
     }
 
-    if (!isValidCurrencySymbol($currency_symbol)) {
+    if (!$model->isValidCurrencySymbol($currency_symbol)) {
         return "Invalid currency symbol '$currency_symbol'. Provide a valid currency symbol or try 'help'." . PHP_EOL;
     }
 
-    $price = getCurrencyPrice($currency_symbol);
-    return printCurrencyPrice($currency_symbol, $price);
+    $price = $model->getCurrencyPrice($currency_symbol);
+    return $view->printCurrencyPrice($currency_symbol, $price);
 }
 
-function handleCurrencyPairCommand($params) {
+function handleCurrencyPairCommand(Model $model, ConsoleView $view, $params) {
     if (count($params) !== 2) {
         return "Invalid number of arguments for 'pair' command. Provide valid base and quote currency symbols." . PHP_EOL;
        
@@ -74,19 +76,19 @@ function handleCurrencyPairCommand($params) {
     $base_currency = strtoupper($params[0]);
     $quote_currency = strtoupper($params[1]);
 
-    if (!isValidCurrencySymbolLength($base_currency) || !isValidCurrencySymbolLength($quote_currency)) {
+    if (!$model->isValidCurrencySymbolLength($base_currency) || !$model->isValidCurrencySymbolLength($quote_currency)) {
         return "Currency symbols should be between 3 and 10 characters." . PHP_EOL;
     }
 
-    if (!isValidCurrencySymbol($base_currency) || !isValidCurrencySymbol($quote_currency)) {
+    if (!$model->isValidCurrencySymbol($base_currency) || !$model->isValidCurrencySymbol($quote_currency)) {
         return "Invalid currency symbols. Provide valid currency symbols or try 'help'." . PHP_EOL;
     }
 
-    $pair_data = getCurrencyPairPrice($base_currency, $quote_currency);
+    $pair_data = $model->getCurrencyPairPrice($base_currency, $quote_currency);
 
     if ($pair_data === false) {
         return "Unable to retrieve currency pair data." . PHP_EOL;
     }
 
-    return printCurrencyPairPrice($base_currency, $quote_currency, $pair_data);
+    return $view->printCurrencyPairPrice($base_currency, $quote_currency, $pair_data);
 }
