@@ -12,6 +12,7 @@ if ($argc < 2 || empty($argv[1])) {
 
 $model = new Model();
 $view = new ConsoleView($model);
+
 $command = strtolower($argv[1]);
 $parameters = array_slice($argv, 2);
 
@@ -21,7 +22,7 @@ switch ($command) {
             echo "Invalid command. Provide valid command or try 'help'." . PHP_EOL;
             exit(1);
         }
-        $view-> printHelpText();
+        $view->printHelpText();
         break;
 
     case 'list':
@@ -30,7 +31,7 @@ switch ($command) {
             exit(1);
         }
         $valid_currency_symbols = $model->getValidCurrencies();
-        $view-> printList($valid_currency_symbols);
+        $view->printList($valid_currency_symbols);
         break;
 
     case 'single':
@@ -64,7 +65,7 @@ function handleSingleCurrencyCommand(Model $model, ConsoleView $view, $params) {
     }
 
     $price = $model->getCurrencyPrice($currency_symbol);
-    return $view->printCurrencyPrice($currency_symbol, $price);
+    return $view->printCurrencyPrice($currency_symbol, $price, $model);
 }
 
 function handleCurrencyPairCommand(Model $model, ConsoleView $view, $params) {
@@ -90,5 +91,5 @@ function handleCurrencyPairCommand(Model $model, ConsoleView $view, $params) {
         return "Unable to retrieve currency pair data." . PHP_EOL;
     }
 
-    return $view->printCurrencyPairPrice($base_currency, $quote_currency, $pair_data);
+    return $view->printCurrencyPairPrice($base_currency, $quote_currency, $pair_data, $model);
 }
