@@ -8,9 +8,17 @@ class ConsoleView {
     }
 
     public function printList($valid_currency_symbols) {
-            $list_of_currencies = "LIST OF VALID CURRENCIES: " . implode(", ", $valid_currency_symbols) . PHP_EOL;
-            echo $list_of_currencies;
+        if (is_array($valid_currency_symbols)) {
+            if (!empty($valid_currency_symbols)) {
+                $list_of_currencies = "LIST OF VALID CURRENCIES: " . implode(", ", $valid_currency_symbols) . PHP_EOL;
+                echo $list_of_currencies;
+            } else {
+                echo "Error: Valid currency symbols list is empty." . PHP_EOL;
+            }
+        } else {
+            echo "Error: Unable to retrieve valid currency symbols." . PHP_EOL;
         }
+    }
 
     public function printCurrencyPrice($currency_symbol) {
         $data = $this->model->getCurrencyPrice($currency_symbol);

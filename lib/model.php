@@ -2,17 +2,39 @@
 
 class Model {
     const API_BASE_URL = 'https://api.coinbase.com/v2/';
+    private $listOfCurrencies = null;
 
     private function callApi($path, $params = '') {
         $url = self::API_BASE_URL . $path . $params;
         $json_data = file_get_contents($url);
         $data = json_decode($json_data, true);
 
-        if ($data === null || !isset($data['data'])) {
+        return ($data !== null && isset($data['data'])) ? $data : false;
+    }
+
+    private function getList() {
+        if ($this->listOfCurrencies !== null) {
+            return $this->listOfCurrencies;
+        }
+
+        $data = $this->callApi('currencies');
+
+        if ($data === false) {
             return false;
         }
 
-        return $data;
+        $this->listOfCurrencies = $data['data'];
+        return $this->listOfCurrencies;
+    }
+
+    public function areTheEnteredTagsOnList($currency) {
+        $list = $this->getList();
+
+        if ($list === false || !is_array($list)) {
+            return false;
+        }
+
+        return in_array($currency, array_column($list, 'id'));
     }
 
     public function getValidCurrencies() {
