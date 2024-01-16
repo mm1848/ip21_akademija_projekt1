@@ -41,7 +41,7 @@ switch ($command) {
         exit(1);
 }
 
-function handleSingleCurrencyCommand(Model $model, ConsoleView $view, $params) {
+function handleSingleCurrencyCommand(Model $model, ConsoleView $view, array $params): ?string {
     if (count($params) !== 1) {
         return "Invalid number of arguments for 'single' command. Provide a valid currency symbol." . PHP_EOL;
     }
@@ -60,7 +60,7 @@ function handleSingleCurrencyCommand(Model $model, ConsoleView $view, $params) {
     return $view->printCurrencyPrice($currency_symbol, $price, $model);
 }
 
-function handleCurrencyPairCommand(Model $model, ConsoleView $view, $params) {
+function handleCurrencyPairCommand(Model $model, ConsoleView $view, array $params): ?string {
     if (count($params) !== 2) {
         return "Invalid number of arguments for 'pair' command. Provide valid base and quote currency symbols." . PHP_EOL;
        
