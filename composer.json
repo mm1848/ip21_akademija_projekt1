@@ -1,0 +1,10 @@
+{
+    "name": "mm/cryptoprice",
+    "description": "A PHP library for cryptocurrency-related operations, including price retrieval, currency conversion, and more.",
+    "type": "library",
+    "license": "gnu",
+    "minimum-stability": "stable",
+    "require": {
+        "twig/twig": "^3.8"
+    }
+}
