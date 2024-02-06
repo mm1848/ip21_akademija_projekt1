@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LIST OF CURRENCIES</title>
+    <link rel="stylesheet" href="/lib/view/web/css/style.css"> <!-- Spremenite pot glede na vašo dejansko strukturo mape -->
+</head>
+<body>
+    <div class="container">
+        <h1>LIST OF CURRENCIES</h1>
+        <ul>
+            {% for currency in currencies %}
+                <li>{{ currency.id }} - {{ currency.name }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+</body>
+</html>
