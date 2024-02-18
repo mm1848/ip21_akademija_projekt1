@@ -8,9 +8,12 @@ class ConsoleView {
     }
 
     public function printList(array $valid_currency_symbols): void {
-            $list_of_currencies = "LIST OF VALID CURRENCIES: " . implode(", ", $valid_currency_symbols) . PHP_EOL;
-            echo $list_of_currencies;
+        echo "LIST OF VALID CURRENCIES:" . PHP_EOL;
+        foreach ($valid_currency_symbols as $index => $currency_symbol) {
+            echo ($index + 1) . ". " . $currency_symbol . PHP_EOL;
         }
+
+    }
 
         public function printCurrencyPrice(string $currency_symbol, ?array $priceData): void {
             $this->printFormattedCurrencyPrice($currency_symbol, $priceData);

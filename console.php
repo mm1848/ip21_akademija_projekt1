@@ -21,10 +21,15 @@ switch ($command) {
         break;
 
     case 'list':
-        $valid_currency_symbols = $model->getValidCurrencies();
-        $valid_currency_symbols = is_array($valid_currency_symbols['data']) ? array_column($valid_currency_symbols['data'], 'id') : [];
-        $view->printList($valid_currency_symbols);
-        break;
+            $valid_currency_symbols = $model->getValidCurrencies();
+        if ($valid_currency_symbols !== false && isset($valid_currency_symbols['data'])) {
+            $valid_currency_symbols = array_column($valid_currency_symbols['data'], 'id');
+            $view->printList($valid_currency_symbols);
+               askForFavorites($valid_currency_symbols);
+            } else {
+                echo "Unable to retrieve the list of currencies." . PHP_EOL;
+            }
+            break;
 
     case 'single':
         $result = handleSingleCurrencyCommand($model, $view, array_slice($argv, 2));
@@ -39,6 +44,25 @@ switch ($command) {
     default:
         echo "Invalid command. Provide valid command or try 'help'." . PHP_EOL;
         exit(1);
+}
+
+function askForFavorites(array $valid_currency_symbols) {
+    echo "\nDo you wish to mark any as favorite? (y/n): ";
+    $handle = fopen ("php://stdin","r");
+    $line = trim(fgets($handle));
+    if(strtolower($line) == 'y') {
+        echo "Please enter the number(s) in front of the currency you wish to favorite, separated by commas: ";
+        $favorites_input = trim(fgets($handle));
+        $favorite_numbers = explode(',', $favorites_input);
+        $favorites = [];
+        foreach ($favorite_numbers as $number) {
+            if (isset($valid_currency_symbols[$number - 1])) {
+                $favorites[] = $valid_currency_symbols[$number - 1];
+            }
+        }
+        echo "You have marked the following as favorite: " . implode(', ', $favorites) . "\n";
+    }
+    fclose($handle);
 }
 
 function handleSingleCurrencyCommand(Model $model, ConsoleView $view, array $params): ?string {
