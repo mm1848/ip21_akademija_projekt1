@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Favourite Currencies{% endblock %}
+
+{% block body %}
+    <h1>Favourite Currencies</h1>
+    <ul>
+        {% for currency in favourites %}
+            <li>{{ loop.index }}. <strong>{{ currency.currency_name }}</strong></li>
+        {% endfor %}
+    </ul>
+{% endblock %}
+

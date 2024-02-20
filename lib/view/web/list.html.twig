@@ -1,19 +1,13 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LIST OF CURRENCIES</title>
-    <link rel="stylesheet" href="/lib/view/web/css/style.css">
-</head>
-<body>
-    <div class="container">
-        <h1>LIST OF CURRENCIES</h1>
-        <ul>
-            {% for currency in currencies %}
-                <li>{{ loop.index }}. <strong>{{ currency.id }}</strong> - {{ currency.name }}</li>
-            {% endfor %}
-        </ul>
-    </div>
-</body>
-</html>
+{% extends 'base.html.twig' %}
+
+{% block title %}List of Currencies{% endblock %}
+
+{% block body %}
+    <h1>List of Currencies</h1>
+    <ul>
+        {% for currency in currencies %}
+            <li>{{ loop.index }}. <strong>{{ currency.id }}</strong> - {{ currency.name }}</li>
+        {% endfor %}
+    </ul>
+{% endblock %}
+

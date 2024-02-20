@@ -58,5 +58,4 @@ class ConsoleView {
     3. To see all valid currency symbols: php console.php list
     TEXT . PHP_EOL . PHP_EOL;
     }
-
 }

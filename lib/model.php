@@ -1,6 +1,20 @@
 <?php
 
 class Model {
+    private $pdo;
+
+    public function __construct() {
+        $dsn = 'mysql:host=localhost;dbname=project1;charset=utf8mb4';
+        $options = [
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+        ];
+        try {
+            $this->pdo = new PDO($dsn, 'project1_www', '5fETTudNy9DwMQPm', $options);
+        } catch (PDOException $e) {
+            throw new \PDOException($e->getMessage(), (int)$e->getCode());
+        }
+}
     const API_BASE_URL = 'https://api.coinbase.com/v2/';
     private $listOfCurrencies = null;
 
@@ -63,4 +77,19 @@ class Model {
     public function getCurrencyPairPrice(string $base_currency, string $quote_currency): ?array {
         return $this->callApi("prices/$base_currency-$quote_currency/spot");
     }
+
+    public function addOrUpdateFavouriteCurrency($currencyName) {
+        $sql = "INSERT INTO favourites (currency_name) VALUES (:currency_name) 
+                ON DUPLICATE KEY UPDATE currency_name = VALUES(currency_name)";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute(['currency_name' => $currencyName]);
+    }
+    
+    public function fetchFavouriteCurrencies() {
+        $sql = "SELECT currency_name FROM favourites";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
 }
