@@ -4,7 +4,7 @@
 
 {% block body %}
 <h1>Crypto Prices</h1>
-<form action="show_price.php" method="GET">
+<form id="priceForm" action="show_price.php" method="GET">
     <div style="display: flex; justify-content: space-between; max-width: 300px; margin-bottom: 20px;">
         <div>
             <label for="base_currency">Base Currency:</label>
@@ -23,6 +23,21 @@
             </select>
         </div>
     </div>
-    <button type="submit">Show Price</button>
+    <button id="showPriceButton" type="submit">Show Price</button>
 </form>
+<div id="priceResult"></div>
+
+<script>
+    document.getElementById('priceForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+        var form = this;
+        var formData = new FormData(form);
+        
+        fetch(form.action + '?' + new URLSearchParams(formData))
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('priceResult').innerHTML = data;
+            });
+    });
+</script>
 {% endblock %}
