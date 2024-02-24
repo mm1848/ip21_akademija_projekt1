@@ -7,9 +7,9 @@ class ConsoleView {
         $this->model = $model;
     }
 
-    public function printList(array $valid_currency_symbols): void {
+    public function printList(array $allCurrencies): void {
         echo "LIST OF VALID CURRENCIES:" . PHP_EOL;
-        foreach ($valid_currency_symbols as $index => $currency_symbol) {
+        foreach ($allCurrencies as $index => $currency_symbol) {
             echo ($index + 1) . ". " . $currency_symbol . PHP_EOL;
         }
 
@@ -56,6 +56,8 @@ class ConsoleView {
     FOR EXAMPLE: php console.php pair GBP JPY
 
     3. To see all valid currency symbols: php console.php list
+
+    4. To manage favorites: php console.php favorites
     TEXT . PHP_EOL . PHP_EOL;
     }
 }

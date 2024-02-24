@@ -26,6 +26,33 @@ class Model {
         return ($data !== null && isset($data['data'])) ? $data : false;
     }
 
+    public function getValidCurrencies(): ?array {
+        return $this->callApi('currencies');
+    }
+    
+    public function getCryptocurrencies(): ?array {
+        return $this->callApi('currencies/crypto');
+    }
+    
+    public function getAllCurrencies(): ?array {
+        $fiatCurrencies = $this->getValidCurrencies();
+        $cryptoCurrencies = $this->getCryptocurrencies();
+        if (!$fiatCurrencies || !$cryptoCurrencies) {
+            return null;
+        }
+        
+        $cryptoCurrenciesAdjusted = array_map(function($currency) {
+            if (isset($currency['code']) && !isset($currency['id'])) {
+                $currency['id'] = $currency['code'];
+            }
+            return $currency;
+        }, $cryptoCurrencies['data']);
+        
+        $allCurrencies = array_merge($fiatCurrencies['data'], $cryptoCurrenciesAdjusted);
+        return ['data' => $allCurrencies];
+    }
+
+
     private function getList(): ?array {
         if ($this->listOfCurrencies !== null) {
             return $this->listOfCurrencies;
@@ -51,20 +78,15 @@ class Model {
         return in_array($currency, array_column($list, 'id'));
     }
 
-    public function getValidCurrencies(): ?array {
-        return $this->callApi('currencies');
-    }
-
     public function isValidCurrencySymbol(string $currency_symbol): bool {
-        $valid_currencies = $this->getValidCurrencies();
+        $allCurrencies = $this->getAllCurrencies();
 
-        if ($valid_currencies === false || !isset($valid_currencies['data']) || !is_array($valid_currencies['data'])) {
+        if ($allCurrencies === false || !isset($allCurrencies['data']) || !is_array($allCurrencies['data'])) {
             return false;
         }
 
-        return in_array($currency_symbol, array_column($valid_currencies['data'], 'id'));
+        return in_array($currency_symbol, array_column($allCurrencies['data'], 'id'));
     }
-
     public function isValidCurrencySymbolLength(string $currency_symbol): bool {
         $symbol_length = strlen($currency_symbol);
         return $symbol_length >= 3 && $symbol_length <= 10;

@@ -8,15 +8,15 @@ $twig = new Twig\Environment($loader);
 
 $model = new Model();
 
-$favourites = $model->fetchFavouriteCurrencies();
+$allCurrencies = $model->getAllCurrencies();
 
-if (!empty($favourites)) {
-    echo $twig->render('favourites.html.twig', ['favourites' => $favourites]);
-} else {
-    echo "No favourite currencies found.";
+if ($allCurrencies === null) {
+    echo "Error retrieving currencies.";
+    exit;
 }
 
-$validCurrencies = $model->getValidCurrencies();
-echo $twig->render('list.html.twig', ['currencies' => $validCurrencies['data']]);
+echo $twig->render('select_currencies.html.twig', ['currencies' => $allCurrencies['data']]);
+
+
 
 

@@ -1,0 +1,28 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Crypto Prices{% endblock %}
+
+{% block body %}
+<h1>Crypto Prices</h1>
+<form action="show_price.php" method="GET">
+    <div style="display: flex; justify-content: space-between; max-width: 300px; margin-bottom: 20px;">
+        <div>
+            <label for="base_currency">Base Currency:</label>
+            <select name="base_currency" id="base_currency">
+                {% for currency in currencies %}
+                    <option value="{{ currency.id }}">{{ currency.id }} - {{ currency.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div>
+            <label for="quote_currency">Quote Currency:</label>
+            <select name="quote_currency" id="quote_currency">
+                {% for currency in currencies %}
+                    <option value="{{ currency.id }}">{{ currency.id }} - {{ currency.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+    <button type="submit">Show Price</button>
+</form>
+{% endblock %}

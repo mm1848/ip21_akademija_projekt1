@@ -3,7 +3,7 @@
 require_once 'lib/view/consoleView.php';
 require_once 'lib/model.php';
 
-echo "CRYPTO PRICE VIEWER" . PHP_EOL . PHP_EOL;
+echo "CRYPTO PRICES" . PHP_EOL . PHP_EOL;
 
 if ($argc < 2 || empty($argv[1])) {
     echo "Provide valid command or try 'help'." . PHP_EOL;
@@ -21,14 +21,14 @@ switch ($command) {
         break;
 
     case 'list':
-        $valid_currency_symbols = $model->getValidCurrencies();
-        if ($valid_currency_symbols !== false && isset($valid_currency_symbols['data'])) {
-             $valid_currency_symbols = array_column($valid_currency_symbols['data'], 'id');
-            $view->printList($valid_currency_symbols);
-             askForFavourites($valid_currency_symbols, $model);
+        $allCurrencies = $model->getAllCurrencies();
+        if ($allCurrencies !== false && isset($allCurrencies['data'])) {
+            $currencySymbols = array_column($allCurrencies['data'], 'id');
+            $view->printList($currencySymbols);
+            askForFavourites($currencySymbols, $model);
         } else {
-             echo "Unable to retrieve the list of currencies." . PHP_EOL;
-         }
+            echo "Unable to retrieve the list of currencies." . PHP_EOL;
+        }
          break;
 
     case 'single':
