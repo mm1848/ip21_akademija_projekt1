@@ -1,6 +1,7 @@
 <?php
-require_once 'vendor/autoload.php';
-require_once 'lib/model.php';
+
+require_once __DIR__ . '/../vendor/autoload.php';
+require_once __DIR__ . '/../lib/model.php';
 
 $model = new Model();
 

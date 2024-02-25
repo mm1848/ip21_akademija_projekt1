@@ -5,12 +5,12 @@
 {% block body %}
 <h1>Crypto Prices</h1>
 <form id="priceForm" action="show_price.php" method="GET">
-    <div style="display: flex; justify-content: space-between; max-width: 300px; margin-bottom: 20px;">
+    <div class="select-container">
         <div>
             <label for="base_currency">Base Currency:</label>
             <select name="base_currency" id="base_currency">
                 {% for currency in currencies %}
-                    <option value="{{ currency.id }}">{{ currency.id }} - {{ currency.name }}</option>
+                <option value="{{ currency.id }}">{{ currency.id }} - {{ currency.name }}</option>
                 {% endfor %}
             </select>
         </div>
@@ -18,26 +18,28 @@
             <label for="quote_currency">Quote Currency:</label>
             <select name="quote_currency" id="quote_currency">
                 {% for currency in currencies %}
-                    <option value="{{ currency.id }}">{{ currency.id }} - {{ currency.name }}</option>
+                <option value="{{ currency.id }}">{{ currency.id }} - {{ currency.name }}</option>
                 {% endfor %}
             </select>
         </div>
     </div>
     <button id="showPriceButton" type="submit">Show Price</button>
 </form>
-<div id="priceResult"></div>
+<!-- Prikaz pretvorjene valute -->
+<div id="priceResult" class="price-result"></div>
 
 <script>
-    document.getElementById('priceForm').addEventListener('submit', function(event) {
-        event.preventDefault();
-        var form = this;
-        var formData = new FormData(form);
-        
-        fetch(form.action + '?' + new URLSearchParams(formData))
-            .then(response => response.text())
-            .then(data => {
-                document.getElementById('priceResult').innerHTML = data;
-            });
-    });
+document.getElementById('priceForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+    var form = this;
+    var formData = new FormData(form);
+
+    fetch(form.action + '?' + new URLSearchParams(formData))
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('priceResult').innerHTML = data;
+            document.getElementById('priceResult').style.display = 'block'; // Prikaži rezultat
+        });
+});
 </script>
 {% endblock %}
