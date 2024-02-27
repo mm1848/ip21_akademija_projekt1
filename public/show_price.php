@@ -12,5 +12,5 @@ if (isset($_GET['base_currency']) && isset($_GET['quote_currency'])) {
 
     echo "{$price['data']['amount']}";
 } else {
-    echo "Please select both base and quote currencies.";
+    echo $twig->render('select_currencies.html.twig', ['currencies' => $allCurrencies['data']]);
 }

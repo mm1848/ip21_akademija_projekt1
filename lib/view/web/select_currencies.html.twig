@@ -7,7 +7,6 @@
 <form id="priceForm" action="show_price.php" method="GET">
     <div class="select-container">
         <div>
-            <label for="base_currency">Base Currency:</label>
             <select name="base_currency" id="base_currency">
                 {% for currency in currencies %}
                 <option value="{{ currency.id }}">{{ currency.id }} - {{ currency.name }}</option>
@@ -15,7 +14,6 @@
             </select>
         </div>
         <div>
-            <label for="quote_currency">Quote Currency:</label>
             <select name="quote_currency" id="quote_currency">
                 {% for currency in currencies %}
                 <option value="{{ currency.id }}">{{ currency.id }} - {{ currency.name }}</option>
@@ -25,21 +23,9 @@
     </div>
     <button id="showPriceButton" type="submit">Show Price</button>
 </form>
-<!-- Prikaz pretvorjene valute -->
+
 <div id="priceResult" class="price-result"></div>
 
-<script>
-document.getElementById('priceForm').addEventListener('submit', function(event) {
-    event.preventDefault();
-    var form = this;
-    var formData = new FormData(form);
+<script src="assets/js/script.js"></script>
 
-    fetch(form.action + '?' + new URLSearchParams(formData))
-        .then(response => response.text())
-        .then(data => {
-            document.getElementById('priceResult').innerHTML = data;
-            document.getElementById('priceResult').style.display = 'block'; // Prikaži rezultat
-        });
-});
-</script>
 {% endblock %}
