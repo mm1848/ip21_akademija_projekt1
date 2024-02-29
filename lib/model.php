@@ -10,7 +10,7 @@ class Model {
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
         ];
         try {
-            $this->pdo = new PDO($dsn, 'project1_www', '5fETTudNy9DwMQPm', $options);
+            $this->pdo = new PDO($dsn, 'project1_www', 'kbOx_lA9X*C_LN6Y', $options);
         } catch (PDOException $e) {
             throw new \PDOException($e->getMessage(), (int)$e->getCode());
         }
