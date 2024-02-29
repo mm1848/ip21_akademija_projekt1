@@ -4,10 +4,10 @@
 
 {% block body %}
     <h1>Favourite Currencies</h1>
-    <ul>
+    <select id="favouriteCurrenciesDropdown">
+        <option selected>&#9733;</option> <!-- Unicode zvezda -->
         {% for currency in favourites %}
-            <li>{{ loop.index }}. <strong>{{ currency.currency_name }}</strong></li>
+            <option value="{{ currency.currency_name }}">{{ currency.currency_name }}</option>
         {% endfor %}
-    </ul>
+    </select>
 {% endblock %}
-

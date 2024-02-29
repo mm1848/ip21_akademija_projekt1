@@ -6,14 +6,19 @@
 <h1>Crypto Prices</h1>
 <form id="priceForm" action="show_price.php" method="GET">
     <div class="select-container">
-        <div>
+        <!-- GUMB ZVEZA 1 -->
+        <div class="favorite-btn-container">
+            <button type="button" id="favoriteBaseCurrency" class="favorite-btn"><i class="far fa-star"></i></button>
             <select name="base_currency" id="base_currency">
                 {% for currency in currencies %}
                 <option value="{{ currency.id }}">{{ currency.id }} - {{ currency.name }}</option>
                 {% endfor %}
             </select>
         </div>
-        <div>
+        
+        <!-- GUMB ZVEZDA 2-->
+        <div class="favorite-btn-container">
+            <button type="button" id="favoriteQuoteCurrency" class="favorite-btn"><i class="far fa-star"></i></button>
             <select name="quote_currency" id="quote_currency">
                 {% for currency in currencies %}
                 <option value="{{ currency.id }}">{{ currency.id }} - {{ currency.name }}</option>

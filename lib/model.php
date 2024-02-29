@@ -101,8 +101,10 @@ class Model {
     }
 
     public function addOrUpdateFavouriteCurrency($currencyName) {
-        $sql = "INSERT INTO favourites (currency_name) VALUES (:currency_name) 
-                ON DUPLICATE KEY UPDATE currency_name = VALUES(currency_name)";
+        if ($this->isCurrencyFavourite($currencyName)) {
+            return;
+        }
+        $sql = "INSERT INTO favourites (currency_name) VALUES (:currency_name)";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute(['currency_name' => $currencyName]);
     }
@@ -112,6 +114,19 @@ class Model {
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function removeFavouriteCurrency($currencyName) {
+        $sql = "DELETE FROM favourites WHERE currency_name = :currency_name";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute(['currency_name' => $currencyName]);
+    }
+
+    public function isCurrencyFavourite($currencyName) {
+        $sql = "SELECT 1 FROM favourites WHERE currency_name = :currency_name";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute(['currency_name' => $currencyName]);
+        return $stmt->fetch() ? true : false;
     }
 
 }
