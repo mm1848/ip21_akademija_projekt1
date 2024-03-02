@@ -21,7 +21,6 @@ if (isset($_POST['action']) && in_array($_POST['action'], ['favorite_add', 'favo
         $model->removeFavouriteCurrency($currencyName);
     }
 
-    // Vrnite posodobljen seznam priljubljenih
     $favourites = $model->fetchFavouriteCurrencies();
     echo json_encode($favourites);
     exit;

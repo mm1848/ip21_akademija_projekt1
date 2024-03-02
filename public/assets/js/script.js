@@ -2,7 +2,8 @@ document.querySelectorAll('.favorite-btn').forEach(button => {
     button.addEventListener('click', function(event) {
         event.preventDefault();
         const currencyId = this.parentElement.querySelector('select').value;
-        const action = this.classList.contains('favorited') ? 'favorite_remove' : 'favorite_add';
+        const isFavorited = this.classList.contains('favorited');
+        const action = isFavorited ? 'favorite_remove' : 'favorite_add';
 
         fetch('show_price.php', {
             method: 'POST',
@@ -14,19 +15,25 @@ document.querySelectorAll('.favorite-btn').forEach(button => {
         .then(response => response.json())
         .then(data => {
             updateFavouriteList(data); // Posodobi seznam priljubljenih na strani
-            this.classList.toggle('favorited'); // Posodobi stanje zvezdice
+            this.classList.toggle('favorited'); // Posodobi stanje zvezdice pravilno
         })
         .catch(error => console.error('Error:', error));
     });
 });
 
+
 function updateFavouriteList(favourites) {
-    const listElement = document.getElementById('favouriteList');
-    listElement.innerHTML = ''; // Počisti trenutni seznam
+    const dropdownElement = document.getElementById('favouriteCurrenciesDropdown');
+    if (!dropdownElement) {
+        console.error('Dropdown element for favourite currencies not found.');
+        return;
+    }
+    while (dropdownElement.options.length > 1) {
+        dropdownElement.remove(1);
+    }
     favourites.forEach(favourite => {
-        const listItem = document.createElement('li');
-        listItem.textContent = favourite.currency_name; // Ali ustrezno lastnost iz vašega JSON odgovora
-        listElement.appendChild(listItem);
+        const option = new Option(favourite.currency_name, favourite.currency_id); // Adjust property names as necessary
+        dropdownElement.add(option);
     });
 }
 
