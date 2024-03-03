@@ -121,3 +121,23 @@ select, button {
 .not-favorited {
     color: gray;
 }
+
+.navbar {
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
+    text-align: left;
+}
+
+.login-link{
+    background-color: green;
+    padding: 10px 15px;
+    border-radius: 5px;
+    margin-left: auto;
+}
+
+.login-link a:hover {
+    background-color: #45a049;
+}
+
+

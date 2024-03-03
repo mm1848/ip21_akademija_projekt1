@@ -1,5 +1,7 @@
 <?php
 
+session_start();
+
 require_once __DIR__ . '/../vendor/autoload.php';
 require_once __DIR__ . '/../lib/model.php';
 
@@ -16,6 +18,9 @@ if ($allCurrencies === null) {
     exit;
 }
 
-echo $twig->render('favourites.html.twig', ['favourites' => $favourites]);
+$twig->addGlobal('session', $_SESSION);
 
-echo $twig->render('select_currencies.html.twig', ['currencies' => $allCurrencies['data']]);
+echo $twig->render('favourites.html.twig', [
+    'favourites' => $favourites,
+    'currencies' => $allCurrencies['data']
+]);

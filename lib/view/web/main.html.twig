@@ -1,0 +1,10 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div id="favourites">
+        {% include 'favourites.html.twig' with {'favourites': favourites} %}
+    </div>
+    <div id="currencies">
+        {% include 'select_currencies.html.twig' with {'currencies': currencies.data} %}
+    </div>
+{% endblock %}

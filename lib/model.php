@@ -129,4 +129,30 @@ class Model {
         return $stmt->fetch() ? true : false;
     }
 
+    public function addUser($email, $hashedPassword) {
+        $sql = "INSERT INTO users (email, password) VALUES (?, ?)";
+        $stmt = $this->pdo->prepare($sql);
+        return $stmt->execute([$email, $hashedPassword]);
+    }
+
+    public function checkUserCredentials($email, $password) {
+        $sql = "SELECT id, password FROM users WHERE email = ?";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([$email]);
+        $user = $stmt->fetch();
+    
+        if ($user && password_verify($password, $user['password'])) {
+            return $user;
+        } else {
+            return false;
+        }
+    }
+
+    public function userExists($email) {
+        $sql = "SELECT COUNT(*) FROM users WHERE email = ?";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([$email]);
+        $count = $stmt->fetchColumn();
+        return $count > 0;
+    }
 }

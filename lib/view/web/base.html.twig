@@ -8,10 +8,17 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 </head>
 <body>
+    <nav class="navbar">
+        <div class="login-link">
+            {% if session.logged_in_as %}
+                Logged in as {{ session.user_email }}
+            {% else %}
+                <a href="/login.php">Login</a>
+            {% endif %}
+        </div>
+    </nav>
     <div class="container">
-        {% block body %}
-        
-        {% endblock %}
+        {% block body %}{% endblock %}
     </div>
 </body>
-</html>
+

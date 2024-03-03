@@ -58,6 +58,10 @@ class ConsoleView {
     3. To see all valid currency symbols: php console.php list
 
     4. To manage favorites: php console.php favorites
+
+    5. To add a new user with email and password:
+    php console.php_add user <email> <password>
+    FOR EXAMPLE: php console.php add_user example@gmail.com password123456
     TEXT . PHP_EOL . PHP_EOL;
     }
 }

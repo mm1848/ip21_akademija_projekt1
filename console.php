@@ -48,6 +48,16 @@ switch ($command) {
         }
         break;
 
+    case 'add_user':
+        if ($argc !== 4) {
+             echo "Usage: php console.php add_user 'email' 'password'" . PHP_EOL;
+             exit(1);
+        }
+        $email = $argv[2];
+        $password = $argv[3];
+        addUser($email, $password, $model);
+        break;
+
     default:
         echo "Invalid command. Provide valid command or try 'help'." . PHP_EOL;
         exit(1);
@@ -121,3 +131,15 @@ function handleCurrencyPairCommand(Model $model, ConsoleView $view, array $param
 
     return $view->printCurrencyPairPrice($base_currency, $quote_currency, $pair_data, $model);
 }
+
+function addUser($email, $password, $model) {
+    $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+    $result = $model->addUser($email, $hashedPassword);
+
+    if ($result) {
+        echo "User successfully added." . PHP_EOL;
+    } else {
+        echo "Failed to add user." . PHP_EOL;
+    }
+}
+
