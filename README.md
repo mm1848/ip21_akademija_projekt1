@@ -8,20 +8,20 @@ This project offers two interfaces for checking cryptocurrency prices using the 
    ```bash
     php console.php single <currency_symbol>
 
-    To check the price of any currency pair:
+- To check the price of any currency pair:
   ```bash
     php console.php pair <base_currency> <quote_currency>
     
-    To see all valid currency symbols and select favourites:
-    ```bash
+- To see all valid currency symbols and select favourites:
+  ```bash
     php console.php list
     
-    To check favourites:
-    ```bash
-    php console.php favourites
+- To check favourites:
+  ```bash
+  php console.php favourites
     
-    For more information, run:
-    ```bash
+- For more information, run:
+  ```bash
     php console.php help
 
 
