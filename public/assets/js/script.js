@@ -14,8 +14,8 @@ document.querySelectorAll('.favorite-btn').forEach(button => {
         })
         .then(response => response.json())
         .then(data => {
-            updateFavouriteList(data); // Posodobi seznam priljubljenih na strani
-            this.classList.toggle('favorited'); // Posodobi stanje zvezdice pravilno
+            updateFavouriteList(data);
+            this.classList.toggle('favorited');
         })
         .catch(error => console.error('Error:', error));
     });
@@ -32,7 +32,7 @@ function updateFavouriteList(favourites) {
         dropdownElement.remove(1);
     }
     favourites.forEach(favourite => {
-        const option = new Option(favourite.currency_name, favourite.currency_id); // Adjust property names as necessary
+        const option = new Option(favourite.currency_name, favourite.currency_id);
         dropdownElement.add(option);
     });
 }

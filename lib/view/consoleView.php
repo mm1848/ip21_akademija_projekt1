@@ -12,36 +12,35 @@ class ConsoleView {
         foreach ($allCurrencies as $index => $currency_symbol) {
             echo ($index + 1) . ". " . $currency_symbol . PHP_EOL;
         }
-
     }
 
-        public function printCurrencyPrice(string $currency_symbol, ?array $priceData): void {
-            $this->printFormattedCurrencyPrice($currency_symbol, $priceData);
+    public function printCurrencyPrice(string $currency_symbol, ?array $priceData): void {
+        $this->printFormattedCurrencyPrice($currency_symbol, $priceData);
+    }
+        
+    private function printFormattedCurrencyPrice(string $currency_symbol, ?array $priceData): void {
+        if ($priceData === false) {
+         echo "Unable to retrieve currency data." . PHP_EOL;
+        return;
         }
         
-        private function printFormattedCurrencyPrice(string $currency_symbol, ?array $priceData): void {
-            if ($priceData === false) {
-                echo "Unable to retrieve currency data." . PHP_EOL;
-                return;
-            }
-        
-            echo sprintf("Price of %s in USD: %s USD" . PHP_EOL, $currency_symbol, $priceData['data']['amount']);
+        echo sprintf("Price of %s in USD: %s USD" . PHP_EOL, $currency_symbol, $priceData['data']['amount']);
         }
         
-        public function printCurrencyPairPrice(string $base_currency, string $quote_currency, ?array $pair_data): void {
-            $this->printFormattedCurrencyPairPrice($base_currency, $quote_currency, $pair_data);
+    public function printCurrencyPairPrice(string $base_currency, string $quote_currency, ?array $pair_data): void {
+        $this->printFormattedCurrencyPairPrice($base_currency, $quote_currency, $pair_data);
         }
         
-        private function printFormattedCurrencyPairPrice(string $base_currency, string $quote_currency, ?array $pair_data): void {
-            if ($pair_data === false) {
-                echo "Unable to retrieve currency pair data." . PHP_EOL;
-                return;
-            }
+    private function printFormattedCurrencyPairPrice(string $base_currency, string $quote_currency, ?array $pair_data): void {
+        if ($pair_data === false) {
+            echo "Unable to retrieve currency pair data." . PHP_EOL;
+            return;
+        }
         
-            echo "$base_currency-$quote_currency Price:" . PHP_EOL;
-            echo sprintf("Currency: %s" . PHP_EOL, $pair_data['data']['base']);
-            echo sprintf("Price: %s %s" . PHP_EOL, $pair_data['data']['amount'], $pair_data['data']['currency']);
-            echo PHP_EOL;
+        echo "$base_currency-$quote_currency Price:" . PHP_EOL;
+        echo sprintf("Currency: %s" . PHP_EOL, $pair_data['data']['base']);
+        echo sprintf("Price: %s %s" . PHP_EOL, $pair_data['data']['amount'], $pair_data['data']['currency']);
+        echo PHP_EOL;
         }
 
     public function printHelpText() {

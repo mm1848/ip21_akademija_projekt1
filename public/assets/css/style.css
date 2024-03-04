@@ -140,4 +140,50 @@ select, button {
     background-color: #45a049;
 }
 
+.success-message {
+    color: #28a745;
+    font-size: 16px;
+    margin-bottom: 20px;
+}
+
+.form-group input {
+    width: 100%;
+    max-width: 400px;
+    padding: 8px;
+    margin-bottom: 10px;
+    box-sizing: border-box;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.login-button {
+    display: block;
+    width: 50%;
+    margin: 0 auto;
+    padding: 10px;
+    border-radius: 5px;
+    background-color: green;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 15px;
+}
+
+.login-button:hover {
+    background-color: #45a049;
+}
+
+
+
+
 
