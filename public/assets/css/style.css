@@ -177,6 +177,7 @@ select, button {
     border: none;
     cursor: pointer;
     font-size: 15px;
+    margin-bottom: 15px;
 }
 
 .login-button:hover {

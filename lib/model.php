@@ -134,7 +134,7 @@ class Model {
         $stmt = $this->pdo->prepare($sql);
         return $stmt->execute([$email, $hashedPassword]);
     }
-
+    
     public function checkUserCredentials($email, $password) {
         $sql = "SELECT id, password FROM users WHERE email = ?";
         $stmt = $this->pdo->prepare($sql);

@@ -1,9 +1,3 @@
-<?php
-
-if (isset($_GET['success'])): ?>
-    <p>Registration successful. Please log in.</p>
-<?php endif; ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -31,7 +25,8 @@ if (isset($_GET['success'])): ?>
                 <input type="password" id="password" name="password" required>
             </div>
             
-            <button type="submit" class="login-button">Login</button>
+            <button type="submit" name="action" value="login" class="login-button">Login</button>
+            <button type="submit" name="action" value="register" class="login-button">Register</button>
         </form>
     </div>
 </body>
