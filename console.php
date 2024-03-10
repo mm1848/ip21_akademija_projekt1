@@ -142,4 +142,3 @@ function addUser($email, $password, $model) {
         echo "Failed to add user." . PHP_EOL;
     }
 }
-

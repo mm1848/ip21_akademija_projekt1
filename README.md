@@ -60,5 +60,5 @@ Replace `yourusername` with your MySQL username and adjust the path to the SQL s
 ## Notes
 
 - The CLI part of the application is intended for quick checks and managing favourites.
-- The web part allows user-specific customization and displays cryptocurrency prices in a    more interactive manner.
+- The web part allows user-specific customization and displays cryptocurrency prices in a more interactive manner.
 
