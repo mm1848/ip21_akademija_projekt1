@@ -10,6 +10,6 @@ CREATE TABLE IF NOT EXISTS users (
 CREATE TABLE IF NOT EXISTS favourites (
     id INT AUTO_INCREMENT PRIMARY KEY,
     currency_name VARCHAR(50) NOT NULL,
-    user_id INT,
+    user_id INT NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users(id)
 );

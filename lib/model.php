@@ -52,7 +52,6 @@ class Model {
         return ['data' => $allCurrencies];
     }
 
-
     private function getList(): ?array {
         if ($this->listOfCurrencies !== null) {
             return $this->listOfCurrencies;
@@ -100,35 +99,36 @@ class Model {
         return $this->callApi("prices/$base_currency-$quote_currency/spot");
     }
 
-    public function addOrUpdateFavouriteCurrency($currencyName) {
-        if ($this->isCurrencyFavourite($currencyName)) {
+    public function addOrUpdateFavouriteCurrency($currencyName, $user_id) { 
+        if ($this->isCurrencyFavourite($currencyName, $user_id)) {
             return;
         }
-        $sql = "INSERT INTO favourites (currency_name) VALUES (:currency_name)";
+        $sql = "INSERT INTO favourites (user_id, currency_name) VALUES (:user_id, :currency_name)";
         $stmt = $this->pdo->prepare($sql);
-        $stmt->execute(['currency_name' => $currencyName]);
+        $stmt->execute(['user_id' => $user_id, 'currency_name' => $currencyName]);
     }
     
-    public function fetchFavouriteCurrencies() {
-        $sql = "SELECT currency_name FROM favourites";
+    public function fetchFavouriteCurrencies($user_id) {
+        $sql = "SELECT currency_name FROM favourites WHERE user_id = :user_id";
         $stmt = $this->pdo->prepare($sql);
-        $stmt->execute();
+        $stmt->execute(['user_id' => $user_id]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
-
-    public function removeFavouriteCurrency($currencyName) {
-        $sql = "DELETE FROM favourites WHERE currency_name = :currency_name";
+    
+    public function removeFavouriteCurrency($currencyName, $user_id) {
+        $sql = "DELETE FROM favourites WHERE user_id = :user_id AND currency_name = :currency_name";
         $stmt = $this->pdo->prepare($sql);
-        $stmt->execute(['currency_name' => $currencyName]);
+        $stmt->execute(['user_id' => $user_id, 'currency_name' => $currencyName]);
     }
+    
 
-    public function isCurrencyFavourite($currencyName) {
-        $sql = "SELECT 1 FROM favourites WHERE currency_name = :currency_name";
+    public function isCurrencyFavourite($currencyName, $user_id) {
+        $sql = "SELECT 1 FROM favourites WHERE user_id = :user_id AND currency_name = :currency_name";
         $stmt = $this->pdo->prepare($sql);
-        $stmt->execute(['currency_name' => $currencyName]);
+        $stmt->execute(['user_id' => $user_id, 'currency_name' => $currencyName]);
         return $stmt->fetch() ? true : false;
     }
-
+    
     public function addUser($email, $hashedPassword) {
         $sql = "INSERT INTO users (email, password) VALUES (?, ?)";
         $stmt = $this->pdo->prepare($sql);

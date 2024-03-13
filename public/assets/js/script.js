@@ -14,13 +14,13 @@ document.querySelectorAll('.favorite-btn').forEach(button => {
         })
         .then(response => response.json())
         .then(data => {
+            console.log(data);
             updateFavouriteList(data);
             this.classList.toggle('favorited');
         })
         .catch(error => console.error('Error:', error));
     });
 });
-
 
 function updateFavouriteList(favourites) {
     const dropdownElement = document.getElementById('favouriteCurrenciesDropdown');
@@ -36,8 +36,6 @@ function updateFavouriteList(favourites) {
         dropdownElement.add(option);
     });
 }
-
-
 
 document.getElementById('priceForm').addEventListener('submit', function(event) {
     event.preventDefault();

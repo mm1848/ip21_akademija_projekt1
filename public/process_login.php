@@ -2,6 +2,7 @@
 
 require_once __DIR__ . '/../vendor/autoload.php';
 require_once __DIR__ . '/../lib/model.php';
+
 session_start();
 
 $user_ip = $_SERVER['REMOTE_ADDR'];

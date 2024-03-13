@@ -42,7 +42,7 @@ switch ($command) {
         break;
 
     case 'favourites':
-        $favourites = $model->fetchFavouriteCurrencies();
+        $favourites = $model->fetchFavouriteCurrencies(0);
         foreach ($favourites as $favourite) {
             echo $favourite['currency_name'] . PHP_EOL;
         }
@@ -64,7 +64,7 @@ switch ($command) {
 }
 
 function askForFavourites($valid_currency_symbols, $model) {
-    echo "\nDo you wish to mark any as favourite? (y/n): ";
+    echo "Do you wish to mark any as favourite? (y/n): ";
     $response = trim(fgets(STDIN));
     if (strtolower($response) == 'y') {
         echo "Please enter the number(s) in front of the currency you wish to favorite, separated by commas: ";
@@ -75,7 +75,7 @@ function askForFavourites($valid_currency_symbols, $model) {
             $index = (int)$number - 1;
             if (isset($valid_currency_symbols[$index])) {
                 $currencyName = $valid_currency_symbols[$index];
-                $model->addOrUpdateFavouriteCurrency($currencyName);
+                $model->addOrUpdateFavouriteCurrency($currencyName, 0);
                 $favorites[] = $currencyName;
             }
         }

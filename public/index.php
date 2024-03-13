@@ -10,17 +10,24 @@ $twig = new Twig\Environment($loader);
 
 $model = new Model();
 
-$allCurrencies = $model->getAllCurrencies();
-$favourites = $model->fetchFavouriteCurrencies();
+$twig->addGlobal('session', $_SESSION);
 
+$allCurrencies = $model->getAllCurrencies();
 if ($allCurrencies === null) {
     echo "Error retrieving currencies.";
     exit;
 }
 
-$twig->addGlobal('session', $_SESSION);
+if (isset($_SESSION['logged_in_as'])) {
+    $user_id = $_SESSION['logged_in_as'];
+    $favourites = $model->fetchFavouriteCurrencies($user_id);
+} else {
+    $favourites = [];
+}
 
 echo $twig->render('favourites.html.twig', [
     'favourites' => $favourites,
     'currencies' => $allCurrencies['data']
 ]);
+
+

@@ -9,6 +9,13 @@
 </head>
 <body>
     <nav class="navbar">
+
+         <div class="nav-links">
+            <a href="/about">About</a>
+            <span class="nav-separator">|</span>
+            <a href="/list">List of Currencies</a>
+        </div>
+
         <div class="login-link">
             {% if session.logged_in_as %}
                 Logged in as {{ session.user_email }}
