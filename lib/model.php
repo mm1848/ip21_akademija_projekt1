@@ -99,7 +99,7 @@ class Model {
         return $this->callApi("prices/$base_currency-$quote_currency/spot");
     }
 
-    public function addOrUpdateFavouriteCurrency($currencyName, $user_id) { 
+    public function addOrUpdateFavouriteCurrency(string $currencyName, int $user_id): void {
         if ($this->isCurrencyFavourite($currencyName, $user_id)) {
             return;
         }
@@ -108,34 +108,33 @@ class Model {
         $stmt->execute(['user_id' => $user_id, 'currency_name' => $currencyName]);
     }
     
-    public function fetchFavouriteCurrencies($user_id) {
+    public function fetchFavouriteCurrencies(int $user_id): array {
         $sql = "SELECT currency_name FROM favourites WHERE user_id = :user_id";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute(['user_id' => $user_id]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
     
-    public function removeFavouriteCurrency($currencyName, $user_id) {
+    public function removeFavouriteCurrency(string $currencyName, int $user_id): void {
         $sql = "DELETE FROM favourites WHERE user_id = :user_id AND currency_name = :currency_name";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute(['user_id' => $user_id, 'currency_name' => $currencyName]);
     }
     
-
-    public function isCurrencyFavourite($currencyName, $user_id) {
+    public function isCurrencyFavourite(string $currencyName, int $user_id): bool {
         $sql = "SELECT 1 FROM favourites WHERE user_id = :user_id AND currency_name = :currency_name";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute(['user_id' => $user_id, 'currency_name' => $currencyName]);
         return $stmt->fetch() ? true : false;
     }
     
-    public function addUser($email, $hashedPassword) {
+    public function addUser(string $email, string $hashedPassword): bool {
         $sql = "INSERT INTO users (email, password) VALUES (?, ?)";
         $stmt = $this->pdo->prepare($sql);
         return $stmt->execute([$email, $hashedPassword]);
     }
     
-    public function checkUserCredentials($email, $password) {
+    public function checkUserCredentials(string $email, string $password): ?array {
         $sql = "SELECT id, password FROM users WHERE email = ?";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([$email]);
@@ -148,7 +147,7 @@ class Model {
         }
     }
 
-    public function userExists($email) {
+    public function userExists(string $email): bool {
         $sql = "SELECT COUNT(*) FROM users WHERE email = ?";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([$email]);

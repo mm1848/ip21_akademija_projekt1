@@ -1,6 +1,6 @@
 # Crypto Prices
 
-This project offers two interfaces for checking cryptocurrency prices using the Coinbase API: a simple console application for CLI usage and a web application interface.
+Crypto Prices is a project that allows users to view real-time cryptocurrency prices via the Coinbase API. The project offers two interfaces: a simple console application for command-line (CLI) usage and a web interface for a more interactive experience.
 
 ## CLI Usage
 
@@ -24,41 +24,40 @@ This project offers two interfaces for checking cryptocurrency prices using the 
   ```bash
     php console.php help
 
-
-# Web Application Setup
-
-Before running the web application, ensure your database is set up correctly:
-
-1. Create a MySQL database named project1.
-2. Run the setup_database.sql script to create necessary tables:
-
-  ```bash
-  mysql -u yourusername -p project1 < path/to/setup_database.sql
-
-
-Replace `yourusername` with your MySQL username and adjust the path to the SQL script as necessary.
-
-## Configuration
-
-- Update the database connection settings in `lib/model.php` to match your database credentials.
-
-## Running the Web Application
-
-- To access the web application, navigate to the `public/index.php` file in your web browser, or configure your web server to serve the `public` directory as the root.
-
 ## Features
 
 - **CLI**: Check real-time cryptocurrency prices, manage favourites.
 - **Web**: User registration and login, display favourite cryptocurrencies, real-time price updates.
 
-## Dependencies
+## Requirements
 
 - PHP 7.4 or higher.
 - MySQL or MariaDB.
 - Composer for managing PHP dependencies.
 
+## Installation
+
+To install the Crypto Prices application, follow these steps:
+
+1. Clone the repository to your local machine:
+   ```bash
+   git clone <url-to-your-repository>
+
+2. Install PHP dependencies by running Composer in the project's root directory:
+   ``bash
+   composer install
+
+3. Database setup:
+- Create a MySQL database named project1.
+- Run the setup_database.sql script to create the necessary tables. Ensure you replace yourusername with your actual MySQL username and adjust the path to the setup_database.sql script as necessary:
+    ```bash
+      mysql -u yourusername -p project1 < path/to/setup_database.sql
+- Update the database connection settings in `lib/model.php` to match your database credentials.
+
+## Running the Web Application
+  - To access the web application, navigate to the public/index.php file in your web browser or configure your web server to serve the public directory as the root.
+
 ## Notes
 
 - The CLI part of the application is intended for quick checks and managing favourites.
 - The web part allows user-specific customization and displays cryptocurrency prices in a more interactive manner.
-
