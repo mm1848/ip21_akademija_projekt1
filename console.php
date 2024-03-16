@@ -2,32 +2,35 @@
 
 require_once 'lib/view/consoleView.php';
 require_once 'lib/model.php';
+require_once 'vendor/autoload.php';
 
-echo "CRYPTO PRICES" . PHP_EOL . PHP_EOL;
+$climate = new League\CLImate\CLImate;
+
+$climate->bold()->out('CRYPTO PRICES')->br();
 
 if ($argc < 2 || empty($argv[1])) {
-    echo "Provide valid command or try 'help'." . PHP_EOL;
+    $climate->bold()->out("Provide valid command or try 'help" . PHP_EOL);
     exit(1);
 }
 
 $model = new Model();
-$view = new ConsoleView($model);
+$view = new ConsoleView($model, $climate);
 
 $command = strtolower($argv[1]);
 
 switch ($command) {
     case 'help':
-        $view->printHelpText();
+        $view->printHelpText($climate);
         break;
 
     case 'list':
         $allCurrencies = $model->getAllCurrencies();
         if ($allCurrencies !== false && isset($allCurrencies['data'])) {
             $currencySymbols = array_column($allCurrencies['data'], 'id');
-            $view->printList($currencySymbols);
-            askForFavourites($currencySymbols, $model);
+            $view->printList($currencySymbols, $climate);
+            askForFavourites($currencySymbols, $model, $climate);
         } else {
-            echo "Unable to retrieve the list of currencies." . PHP_EOL;
+            $climate->red()->bold()->out("Unable to retrieve the list of currencies" . PHP_EOL);
         }
          break;
 
@@ -55,22 +58,21 @@ switch ($command) {
         }
         $email = $argv[2];
         $password = $argv[3];
-        addUser($email, $password, $model);
+        addUser($email, $password, $model, $climate);
         break;
 
     default:
-        echo "Invalid command. Provide valid command or try 'help'." . PHP_EOL;
+        $climate->red()->bold()->out("Invalid command. Provide valid command or try 'help" . PHP_EOL);
         exit(1);
 }
 
-function askForFavourites($valid_currency_symbols, $model) {
-    echo "Do you wish to mark any as favourite? (y/n): ";
-    $response = trim(fgets(STDIN));
+function askForFavourites($valid_currency_symbols, $model, $climate) {
+    $response = $climate->input('Do you wish to mark any as favourite? (y/n):')->prompt();
     if (strtolower($response) == 'y') {
-        echo "Please enter the number(s) in front of the currency you wish to favorite, separated by commas: ";
-        $favoriteNumbers = trim(fgets(STDIN));
+        $favoriteNumbers = $climate->input('Please enter the number(s) in front of the currency you wish to favorite, separated by commas:')->prompt();
         $favoriteNumbersArray = explode(',', $favoriteNumbers);
         $favorites = [];
+
         foreach ($favoriteNumbersArray as $number) {
             $index = (int)$number - 1;
             if (isset($valid_currency_symbols[$index])) {
@@ -79,10 +81,11 @@ function askForFavourites($valid_currency_symbols, $model) {
                 $favorites[] = $currencyName;
             }
         }
+
         if (!empty($favorites)) {
-            echo "You have marked the following as favourite: " . implode(', ', $favorites) . "\n";
+            $climate->out("You have marked the following as favourite: " . implode(', ', $favorites));
         } else {
-            echo "No valid currencies selected.\n";
+            $climate->out("No valid currencies selected.");
         }
     }
 }
@@ -132,13 +135,13 @@ function handleCurrencyPairCommand(Model $model, ConsoleView $view, array $param
     return $view->printCurrencyPairPrice($base_currency, $quote_currency, $pair_data, $model);
 }
 
-function addUser($email, $password, $model) {
+function addUser($email, $password, $model, $climate) {
     $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
     $result = $model->addUser($email, $hashedPassword);
 
     if ($result) {
-        echo "User successfully added." . PHP_EOL;
+        $climate->green()->bold()->out("User successfully added" . PHP_EOL);
     } else {
-        echo "Failed to add user." . PHP_EOL;
+        $climate->red()->bold()->out("Failed to add user" . PHP_EOL);
     }
 }

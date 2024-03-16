@@ -1,13 +1,11 @@
-<!-- lib/view/web/about.twig -->
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>About Project</title>
-</head>
-<body>
-    <h1>About Project</h1>
-    <p>This is my first project.</p>
-</body>
-</html>
+{% extends 'base.html.twig' %}
+
+{% block title %}About{% endblock %}
+
+    {% block body %}
+        <h1>About</h1>
+        <p>"Crypto Prices" is a web-based application that delivers real-time cryptocurrency prices. 
+        Users can register to personalize their experience, tracking favorite cryptocurrencies and receiving 
+        up-to-date market information.The application relies on the Coinbase API for accurate pricing data, supporting
+         both casual enthusiasts and serious investors in navigating the crypto market.</p>
+{% endblock %}
